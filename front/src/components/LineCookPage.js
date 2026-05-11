@@ -1,5 +1,8 @@
+/* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
 import axios from 'axios';
+
+const API = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
 function LineCookPage() {
     const [username, setUsername] = useState('');
@@ -7,13 +10,13 @@ function LineCookPage() {
     const [loggedIn, setLoggedIn] = useState(false);
 
     const fetchTasks = async () => {
-        const API = process.env.REACT_APP_API_URL || 'http://localhost:5000tasks?chef=${username}';
-        setTasks(response.data);
+        const res = await axios.get(`${API}/tasks?chef=${username}`);
+        setTasks(res.data);
         setLoggedIn(true);
     };
 
     const completeTask = async (id) => {
-        await axios.put(`http://localhost:5000/tasks/${id}`, { status: 'completed' });
+        await axios.put(`${API}/tasks/${id}`, { status: 'completed' });
         fetchTasks();
     };
 
@@ -22,12 +25,8 @@ function LineCookPage() {
             <h1>Line Cook Page</h1>
             {!loggedIn ? (
                 <div>
-                    <input
-                        type="text"
-                        placeholder="Enter Username"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                    />
+                    <input type="text" placeholder="Enter Username"
+                        value={username} onChange={(e) => setUsername(e.target.value)} />
                     <button onClick={fetchTasks} className="btn login-btn">Login</button>
                 </div>
             ) : (
