@@ -12,7 +12,7 @@ function WaiterPage() {
     }, []);
 
     const fetchTasks = async () => {
-        const response = await axios.get('http://localhost:5000/tasks');
+        const API = process.env.REACT_APP_API_URL || 'http://localhost:5000/tasks';
         setTasks(response.data);
     };
 

@@ -7,7 +7,7 @@ function LineCookPage() {
     const [loggedIn, setLoggedIn] = useState(false);
 
     const fetchTasks = async () => {
-        const response = await axios.get(`http://localhost:5000/tasks?chef=${username}`);
+        const API = process.env.REACT_APP_API_URL || 'http://localhost:5000tasks?chef=${username}';
         setTasks(response.data);
         setLoggedIn(true);
     };
