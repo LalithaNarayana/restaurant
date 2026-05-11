@@ -15,36 +15,35 @@ function WaiterPage() {
     }, []);
 
     const fetchTasks = async () => {
-        const API = process.env.REACT_APP_API_URL || 'http://localhost:5000/tasks';
-        setTasks(response.data);
+        const res = await axios.get(`${API}/tasks`);
+        setTasks(res.data);
     };
 
     const addChef = async () => {
-        // Logic to add user (chef)
         console.log(`User (Chef) Added: ${newChef}`);
         setNewChef('');
     };
 
     const addTask = async () => {
-        await axios.post('http://localhost:5000/tasks', { name: taskName, status: 'Incomplete', chef: newChef });
+        await axios.post(`${API}/tasks`, { name: taskName, status: 'Incomplete', chef: newChef });
         setTaskName('');
         fetchTasks();
     };
 
     const editTask = (task) => {
-        setEditingTask(task); // Set the task to be edited
+        setEditingTask(task);
     };
 
     const updateTask = async () => {
         if (editingTask) {
-            await axios.put(`http://localhost:5000/tasks/${editingTask._id}`, editingTask);
-            setEditingTask(null); // Clear the editing task
+            await axios.put(`${API}/tasks/${editingTask._id}`, editingTask);
+            setEditingTask(null);
             fetchTasks();
         }
     };
 
     const deleteTask = async (id) => {
-        await axios.delete(`http://localhost:5000/tasks/${id}`);
+        await axios.delete(`${API}/tasks/${id}`);
         fetchTasks();
     };
 
@@ -57,7 +56,6 @@ function WaiterPage() {
                 value={newChef}
                 onChange={(e) => setNewChef(e.target.value)}
             />
-
             <input
                 type="text"
                 placeholder="Add Order"
