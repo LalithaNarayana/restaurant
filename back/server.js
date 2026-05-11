@@ -1,4 +1,3 @@
-// res/back/server.js
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -7,12 +6,21 @@ const tasksRoute = require('./routes/tasks');
 
 const app = express();
 
-app.use(cors());
+app.use(cors({ origin: '*' }));
 app.use(bodyParser.json());
 app.use('/tasks', tasksRoute);
 
-mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log('MongoDB connected'))
-  .catch(err => console.log(err));
+// Cache connection across serverless calls
+let isConnected = false;
+const connectDB = async () => {
+    if (isConnected) return;
+    await mongoose.connect(process.env.MONGODB_URI);
+    isConnected = true;
+};
 
-module.exports = app; // ← export for Vercel
+app.use(async (req, res, next) => {
+    await connectDB();
+    next();
+});
+
+module.exports = app;
