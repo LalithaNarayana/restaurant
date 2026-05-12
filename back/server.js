@@ -6,11 +6,17 @@ const tasksRoute = require('./routes/tasks');
 
 const app = express();
 
-app.use(cors({ origin: '*' }));
+const corsOptions = {
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));  // ← handles preflight
 app.use(bodyParser.json());
 app.use('/tasks', tasksRoute);
 
-// Cache connection across serverless calls
 let isConnected = false;
 const connectDB = async () => {
     if (isConnected) return;
